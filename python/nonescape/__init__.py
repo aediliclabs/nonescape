@@ -17,7 +17,7 @@ import torch
 from torch import Tensor, nn
 import torchvision.models as models
 import torchvision.transforms.v2 as T
-from transformers import Dinov2Model
+from transformers import Dinov2Model, Dinov2Config
 from safetensors.torch import load_file
 from PIL import Image
 
@@ -59,7 +59,7 @@ class NonescapeClassifier(nn.Module):
         self.embedding_size = 1024
         self.num_queries = num_queries
 
-        vit_backbone = Dinov2Model()
+        vit_backbone = Dinov2Model(Dinov2Config.from_pretrained("facebook/dinov2-large"))
         efficientnet = models.efficientnet_v2_l(weights=None, num_classes=num_queries * self.embedding_size)
         self.vit_backbone = vit_backbone
         self.query_net = efficientnet
