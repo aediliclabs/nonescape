@@ -1,6 +1,6 @@
 {
   "name": "@aedilic/nonescape",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript library for AI-generated image detection using nonescape models",
   "main": "dist/nonescape.js",
   "module": "dist/nonescape.esm.js",

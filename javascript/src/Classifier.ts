@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Result of content classification */
-export interface ClassificationResult {
+/** Result data of content classification */
+export interface ClassificationResultData {
   /** Confidence score between 0 and 1 */
   confidence: number;
   /** True if content is artificially generated */
   isSynthetic: boolean;
 }
+
+export type ClassificationResult = ClassificationResultData | null;
 
 export type InputFileType = File | HTMLImageElement | string;
 export const isBatchInput = (input: InputFileType | InputFileType[]): input is Array<InputFileType> =>

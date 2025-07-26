@@ -92,11 +92,9 @@ class RemoteClassifier implements Classifier {
     if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
 
     const data: APIResponse = await response.json();
+    const results = data.results.map((r) => (r.ai_prob === null ? null : reweighThreshold(r.ai_prob, threshold)));
 
-    const errors = data.results.filter((r) => r.ai_prob === null);
-    if (errors.length > 0) throw new Error(`Failed to process image(s): ${errors.map((e) => e.filename).join(", ")}`);
-
-    return data.results.map((r) => reweighThreshold(r.ai_prob!, threshold));
+    return results;
   }
 
   dispose(): void {}
