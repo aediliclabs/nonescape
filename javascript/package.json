@@ -1,0 +1,38 @@
+{
+  "name": "@aedilic/nonescape",
+  "version": "1.0.0",
+  "description": "JavaScript library for AI-generated image detection using nonescape models",
+  "main": "dist/nonescape.js",
+  "module": "dist/nonescape.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "rm -rf dist/ && rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "deepfake-detection",
+    "image-classification",
+    "machine-learning",
+    "onnx"
+  ],
+  "author": "Lukas Schneider <lukas@aedilic.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "onnxruntime-web": "^1.17.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.9.6",
+    "tslib": "^2.8.1",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "onnxruntime-web": ">=1.14.0"
+  }
+}

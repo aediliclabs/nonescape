@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nonescape - Vanilla JS Example</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .upload-area {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        margin: 20px 0;
+        cursor: pointer;
+      }
+      .upload-area:hover {
+        border-color: #007bff;
+      }
+      .progress {
+        width: 100%;
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      .progress-bar {
+        height: 100%;
+        background-color: #007bff;
+      }
+      .result {
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+      }
+      .ai-generated {
+        background-color: #ffe6e6;
+      }
+      .real {
+        background-color: #e6ffe6;
+      }
+      .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Nonescape Image Classifier</h1>
+    <p>Upload images to detect if they are AI-generated or real.</p>
+
+    <div id="loading" style="display: none">
+      <h3>Loading model...</h3>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+      <span id="progressText">Connecting ...</span>
+    </div>
+
+    <div id="interface" style="display: none">
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <p>Click to upload images or drag and drop</p>
+        <input type="file" id="fileInput" multiple accept="image/*" style="display: none" />
+      </div>
+
+      <div id="results"></div>
+    </div>
+
+    <!-- Include the library -->
+    <script src="https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape.min.js"></script>
+
+    <script>
+      let classifier;
+
+      async function initializeClassifier() {
+        document.getElementById("loading").style.display = "block";
+
+        classifier = new Nonescape.LocalClassifier({
+          modelPath: "https://nonescape.sfo2.digitaloceanspaces.com/nonescape-small-v0.onnx",
+          onProgress: ({ current, total }) => {
+            const percent = Math.round((current / total) * 100);
+            document.getElementById("progressBar").style.width = percent + "%";
+            document.getElementById("progressText").textContent = `${Math.round(current / 1e3)}/${Math.round(
+              total / 1e3
+            )}KB (${percent}%)`;
+          },
+        });
+
+        try {
+          await classifier.initialize();
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("interface").style.display = "block";
+          console.log("Model loaded successfully!");
+        } catch (error) {
+          console.error("Failed to load model:", error);
+          document.getElementById("loading").innerHTML = '<p style="color: red;">Failed to load model</p>';
+        }
+      }
+
+      async function processImages(files) {
+        const resultsDiv = document.getElementById("results");
+
+        for (const file of files) {
+          if (!file.type.startsWith("image/")) continue;
+
+          // Create result container
+          const resultDiv = document.createElement("div");
+          resultDiv.className = "result";
+          resultDiv.innerHTML = `
+                    <h4>${file.name}</h4>
+                    <img src="${URL.createObjectURL(file)}" class="image-preview" alt="Preview">
+                    <p>Analyzing...</p>
+                `;
+          resultsDiv.appendChild(resultDiv);
+
+          try {
+            const result = await classifier.predict(file);
+
+            resultDiv.className = `result ${result.isSynthetic ? "ai-generated" : "real"}`;
+            resultDiv.innerHTML = `
+                        <h4>${file.name}</h4>
+                        <img src="${URL.createObjectURL(file)}" class="image-preview" alt="Preview">
+                        <p><strong>${result.isSynthetic ? "AI Generated" : "Real"}</strong></p>
+                        <p>Confidence: ${Math.ceil(result.confidence * 100)}%</p>
+                    `;
+          } catch (error) {
+            console.error("Error classifying image:", error);
+            resultDiv.innerHTML = `
+                        <h4>${file.name}</h4>
+                        <img src="${URL.createObjectURL(file)}" class="image-preview" alt="Preview">
+                        <p style="color: red;">Error classifying image</p>
+                    `;
+          }
+        }
+      }
+
+      // File input handler
+      document.getElementById("fileInput").addEventListener("change", (e) => {
+        if (e.target.files.length > 0) {
+          processImages(Array.from(e.target.files));
+        }
+      });
+
+      // Drag and drop handlers
+      const uploadArea = document.querySelector(".upload-area");
+
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = "#007bff";
+      });
+
+      uploadArea.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = "#ccc";
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = "#ccc";
+
+        if (e.dataTransfer.files.length > 0) {
+          processImages(Array.from(e.dataTransfer.files));
+        }
+      });
+
+      // Initialize when page loads
+      initializeClassifier();
+    </script>
+  </body>
+</html>
