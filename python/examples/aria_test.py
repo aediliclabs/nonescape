@@ -124,6 +124,9 @@ def gather_results(
     return final_scores, final_categories
 
 
+CORRUPTED_IMAGES = ["StarryAI/IT2I/ins/1489777465165169105.png"]  # Dataset contains corrupted images
+
+
 def collect_images(data_path: Path, max_samples: int = None) -> List[Tuple[str, int]]:
     images = []
 
@@ -148,6 +151,7 @@ def collect_images(data_path: Path, max_samples: int = None) -> List[Tuple[str, 
                 if img_path.suffix.lower() in IMG_EXTENSIONS:
                     images.append((str(img_path), categori_id))
 
+    images = [i for i in images if str(Path(i[0]).relative_to(data_path)) not in CORRUPTED_IMAGES]
     if max_samples and len(images) > max_samples:
         images.sort()
         images = random.sample(images, max_samples)
