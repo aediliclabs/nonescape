@@ -17,17 +17,17 @@
 import argparse
 import torch
 from PIL import Image
-from nonescape import NonescapeClassifier, NonescapeClassifierSmall, preprocess_image
+from nonescape import NonescapeClassifier, NonescapeClassifierMini, preprocess_image
 
 
 def main():
     parser = argparse.ArgumentParser(description="Classify image as authentic or AI-generated")
     parser.add_argument("model_path", help="Path to model file (.safetensors)")
     parser.add_argument("image_path", help="Path to image file")
-    parser.add_argument("--small", action="store_true", help="Use small model variant")
+    parser.add_argument("--mini", action="store_true", help="Use mini model variant")
     args = parser.parse_args()
 
-    model = (NonescapeClassifierSmall if args.small else NonescapeClassifier).from_pretrained(args.model_path)
+    model = (NonescapeClassifierMini if args.mini else NonescapeClassifier).from_pretrained(args.model_path)
     model.eval()
 
     try:

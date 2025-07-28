@@ -30,6 +30,6 @@ Download models before running examples:
 # Full model
 wget https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-v0.safetensors
 
-# Small model  
-wget https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-small-v0.safetensors
+# Mini model  
+wget https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-mini-v0.safetensors
 ```

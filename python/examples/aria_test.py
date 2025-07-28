@@ -37,7 +37,7 @@ from PIL import Image
 from sklearn.metrics import accuracy_score, average_precision_score
 from torch.utils.data import Dataset, DataLoader, DistributedSampler
 from tqdm import tqdm
-from nonescape import NonescapeClassifier, NonescapeClassifierSmall, preprocess_image
+from nonescape import NonescapeClassifier, NonescapeClassifierMini, preprocess_image
 
 AI_DIRS = ["DALL-E", "DreamStudio", "Midjourney", "StarryAI"]
 IMG_TYPES = ["T2I", "IT2I"]
@@ -208,7 +208,7 @@ def main():
     parser.add_argument("model_path", help="Path to model file (.safetensors)")
     parser.add_argument("--data-path", default="./aria_dataset", help="Path to dataset directory")
     parser.add_argument("--max-samples", type=int, help="Maximum number of samples to use")
-    parser.add_argument("--small", action="store_true", help="Use small model variant")
+    parser.add_argument("--mini", action="store_true", help="Use mini model variant")
     parser.add_argument(
         "--batch-size", type=int, default=512, help="Batch size for predictions (for multiple GPUs, this is per GPU)"
     )
@@ -243,7 +243,7 @@ def main():
         return
 
     try:
-        model = (NonescapeClassifierSmall if args.small else NonescapeClassifier).from_pretrained(args.model_path)
+        model = (NonescapeClassifierMini if args.mini else NonescapeClassifier).from_pretrained(args.model_path)
         model.to(device)
         model.eval()
     except Exception as e:

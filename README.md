@@ -12,8 +12,8 @@ The full classification model weights:
 - [nonescape-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-v0.safetensors)
 
 A distilled variant of the full model for fast inference:
-- [nonescape-small-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-small-v0.safetensors)
-- [nonescape-small-v0.onnx](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-small-v0.onnx)
+- [nonescape-mini-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-mini-v0.safetensors)
+- [nonescape-mini-v0.onnx](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-mini-v0.onnx)
 
 ## License
 

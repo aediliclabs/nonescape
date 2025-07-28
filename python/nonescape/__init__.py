@@ -116,7 +116,7 @@ class NonescapeClassifier(nn.Module):
         return probs
 
 
-class NonescapeClassifierSmall(nn.Module):
+class NonescapeClassifierMini(nn.Module):
     """EfficientNet-based fake image detector"""
 
     in_features = None  # Override
@@ -128,7 +128,7 @@ class NonescapeClassifierSmall(nn.Module):
         self.head = nn.Linear(embedding_size, num_classes)
 
     @classmethod
-    def from_pretrained(cls, path: str) -> NonescapeClassifierSmall:
+    def from_pretrained(cls, path: str) -> NonescapeClassifierMini:
         state_dict = load_file(path)
 
         model = cls()
@@ -144,4 +144,4 @@ class NonescapeClassifierSmall(nn.Module):
         return probs
 
 
-__all__ = ["NonescapeClassifier", "NonescapeClassifierSmall", "preprocess_image"]
+__all__ = ["NonescapeClassifier", "NonescapeClassifierMini", "preprocess_image"]

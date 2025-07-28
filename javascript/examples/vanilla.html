@@ -85,7 +85,7 @@
         document.getElementById("loading").style.display = "block";
 
         classifier = new Nonescape.LocalClassifier({
-          modelPath: "https://nonescape.sfo2.digitaloceanspaces.com/nonescape-small-v0.onnx",
+          modelPath: "https://nonescape.sfo2.digitaloceanspaces.com/nonescape-mini-v0.onnx",
           onProgress: ({ current, total }) => {
             const percent = Math.round((current / total) * 100);
             document.getElementById("progressBar").style.width = percent + "%";

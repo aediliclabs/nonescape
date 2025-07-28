@@ -41,7 +41,7 @@ export interface LocalClassifierOptions {
 
 /** Synthetic content classifier using local ONNX models */
 class LocalClassifier implements Classifier {
-  private defaultModelPath = "https://nonescape.sfo2.digitaloceanspaces.com/nonescape-small-v0.onnx";
+  private defaultModelPath = "https://nonescape.sfo2.digitaloceanspaces.com/nonescape-mini-v0.onnx";
   private imageChannels = 3;
   private imageSize = 224;
 

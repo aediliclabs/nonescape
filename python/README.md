@@ -31,10 +31,10 @@ results = classifier.predict(["img1.jpg", "img2.jpg"])
 - Higher accuracy
 - Download: [nonescape-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-v0.safetensors)
 
-### Small Model (`NonescapeClassifierSmall`) 
+### Mini Model (`NonescapeClassifierMini`) 
 - EfficientNet only
 - Faster inference
-- Download: [nonescape-small-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-small-v0.safetensors)
+- Download: [nonescape-mini-v0.safetensors](https://nonescape.sfo2.cdn.digitaloceanspaces.com/nonescape-mini-v0.safetensors)
 
 ## Examples
 
