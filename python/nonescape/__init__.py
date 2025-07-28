@@ -48,9 +48,6 @@ class NonescapeClassifier(nn.Module):
     """ViT/EfficientNet-based fake image detector
 
     Uses a vision transformer as backbone with EfficientNet v2 to compute an attention maps for the ViT features.
-    The EfficientNet receives image noise [image - YUVQuantization(image)] as input.
-
-    EfficientNet noise input: https://icml.cc/virtual/2025/poster/44442
     """
 
     def __init__(self, num_classes: int = 2, num_heads=16, num_queries: int = 128):
@@ -68,23 +65,8 @@ class NonescapeClassifier(nn.Module):
         self.attention = nn.MultiheadAttention(self.embedding_size, num_heads=num_heads, batch_first=True)
         self.head = nn.Linear(self.embedding_size, num_classes)
 
-        self.register_buffer("Mt", torch.empty((3, 3)))
-        self.register_buffer("Mt_inv", torch.empty((3, 3)))
         self.register_buffer("_input_mean", torch.empty((3, 1, 1)))
         self.register_buffer("_input_std", torch.empty((3, 1, 1)))
-
-    @staticmethod
-    def _apply_matrix(M: Tensor, x: Tensor) -> Tensor:
-        B, C, H, W = x.shape
-
-        x_flat = x.reshape(B, C, -1)
-        y_flat = M.unsqueeze(0) @ x_flat
-        y = y_flat.reshape(B, C, H, W)
-
-        return y
-
-    def _compute_residual(self, x: Tensor) -> Tensor:
-        return self._apply_matrix(self.Mt_inv, self._apply_matrix(self.Mt, x * 255.0).round()) / 255.0
 
     @classmethod
     def from_pretrained(cls, path: str) -> NonescapeClassifier:
@@ -98,13 +80,10 @@ class NonescapeClassifier(nn.Module):
     def forward(self, x: Tensor) -> Tensor:
         B = x.shape[0]
 
-        unnorm = x * self._input_std + self._input_mean
-        noise = unnorm - self._compute_residual(unnorm)
-
         with torch.no_grad():
             vit_output = self.vit_backbone(x)
             vit_features = vit_output.last_hidden_state  # CLS token [B, embed_dim]
-        q = self.query_net.forward(noise).reshape(B, self.num_queries, -1)  # [B, num_queries, embed_dim]
+        q = self.query_net.forward(x).reshape(B, self.num_queries, -1)  # [B, num_queries, embed_dim]
         k = self.key_net.forward(vit_features)  # [B, D, embed_dim]
         v = self.value_net.forward(vit_features)  # [B, D, embed_dim]
 
