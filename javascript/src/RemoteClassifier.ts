@@ -57,6 +57,8 @@ class RemoteClassifier implements Classifier {
     threshold: number
   ): Promise<ClassificationResult[]> {
     const formData = new FormData();
+    const filenames: string[] = [];
+
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
       let file: File;
@@ -82,6 +84,7 @@ class RemoteClassifier implements Classifier {
         file = new File([blob], `image_${i}.jpg`, { type: "image/jpeg" });
       }
 
+      filenames.push(file.name);
       formData.append("files", file);
     }
 
@@ -92,7 +95,10 @@ class RemoteClassifier implements Classifier {
     if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
 
     const data: APIResponse = await response.json();
-    const results = data.results.map((r) => (r.ai_prob === null ? null : reweighThreshold(r.ai_prob, threshold)));
+    const results = filenames.map((filename) => {
+      const result = data.results.find((r) => r.filename === filename);
+      return typeof result?.ai_prob === "number" ? reweighThreshold(result.ai_prob, threshold) : null;
+    });
 
     return results;
   }
